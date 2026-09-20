@@ -1,4 +1,12 @@
-const InfoModal = ({ data, onClose, isOpen }) => {
+import { InfoModalData } from "@/types/DataType";
+
+type InfoModalProps = {
+  data: InfoModalData;
+  onClose: () => void;
+  isOpen: boolean;
+};
+
+const InfoModal = ({ data, onClose, isOpen }: InfoModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -37,19 +45,23 @@ const InfoModal = ({ data, onClose, isOpen }) => {
             <span>{data.phone}</span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <label htmlFor="">Age: </label>
-            <span>{data.age}</span>
-          </div>
+          {data.age && (
+            <div className="flex items-center justify-between">
+              <label htmlFor="">Age: </label>
+              <span>{data.age}</span>
+            </div>
+          )}
 
-          <div className="flex items-center justify-between">
-            <label htmlFor="">Date of Birth: </label>
-            <span>{data.dob}</span>
-          </div>
+          {data.dob && (
+            <div className="flex items-center justify-between">
+              <label htmlFor="">Date of Birth: </label>
+              <span>{data.dob}</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-between">
             <label htmlFor="">Meeting: </label>
-            <span>{data.meeting}</span>
+            <span>{data.meetingTime}</span>
           </div>
 
           <div className="flex items-center justify-between">
@@ -64,7 +76,7 @@ const InfoModal = ({ data, onClose, isOpen }) => {
 
           <div className="flex items-center justify-between">
             <label htmlFor="">Interest: </label>
-            <span>{data.interests}</span>
+            <span>{data.interest?.join(", ")}</span>
           </div>
         </div>
       </div>

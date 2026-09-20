@@ -1,23 +1,24 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import InfoModal from "./components/InfoModal";
+import InfoModal from "@/components/InfoModal";
 import { useState } from "react";
+import { InfoModalData } from "@/types/DataType";
 
 const inputStyle = "border border-neutral-500 px-3 py-2 mt-1 w-full rounded-sm";
 
-export default function Home() {
+export default function ReactHookForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-  } = useForm();
+    getValues,
+  } = useForm<InfoModalData>();
 
-  const [info, setInfo] = useState({});
+  const [info, setInfo] = useState<InfoModalData | null>(null);
   const [open, setOpen] = useState(false);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: InfoModalData) => {
     console.log(data);
     setInfo(data);
     setOpen(true);
@@ -28,17 +29,17 @@ export default function Home() {
       <h1 className="text-3xl font-semibold">React Hook Form</h1>
       <div className="border mt-8 w-3xl border-neutral-500 p-5 rounded-2xl shadow-2xl">
         <form
-          action=""
           onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="space-y-4"
         >
           <div>
-            <label htmlFor="name" id="fullName" className="block">
+            <label htmlFor="fullName" className="block">
               Full Name: <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
+              id="fullName"
               {...register("fullName", {
                 required: "Please enter your name",
                 minLength: {
@@ -56,16 +57,17 @@ export default function Home() {
 
             {errors.fullName && (
               <p className="text-xs text-red-500 mt-1">
-                {errors.fullName.message}
+                {errors.fullName.message as string}
               </p>
             )}
           </div>
           <div className="w-full">
-            <label htmlFor="email" id="email" className="block">
+            <label htmlFor="email" className="block">
               Email:<span className="text-red-500">*</span>
             </label>
             <input
               type="email"
+              id="email"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -78,26 +80,27 @@ export default function Home() {
             />
             {errors.email && (
               <p className="text-xs text-red-500 mt-1">
-                {errors.email.message}
+                {errors.email.message as string}
               </p>
             )}
           </div>
           <div className="flex w-full gap-4">
             <div className="w-full">
-              <label htmlFor="password" id="password" className="block">
+              <label htmlFor="password" className="block">
                 Password:<span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
+                id="password"
                 {...register("password", {
-                  required: "true",
+                  required: "Password is required",
                   minLength: {
                     value: 8,
-                    message: "password must be greater then 8 charcter",
+                    message: "password must be greater then 8 character",
                   },
                   maxLength: {
                     value: 16,
-                    message: "password must be lower then 8 charcter",
+                    message: "password must be lower then 16 character",
                   },
                   pattern: {
                     value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
@@ -110,64 +113,70 @@ export default function Home() {
               />
               {errors.password && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors.password.message}
+                  {errors.password.message as string}
                 </p>
               )}
             </div>
 
             <div className="w-full">
-              <label
-                htmlFor="confirmPassword"
-                id="confirmPassword"
-                className="block"
-              >
+              <label htmlFor="confirmPassword" className="block">
                 Confirm Password:<span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
-                {...register("confirm-password", {
+                id="confirmPassword"
+                {...register("confirmPassword", {
                   required: "Please confirm your password",
                   validate: (value) =>
-                    value === watch("password") || "Passwords do not match",
+                    value === getValues("password") ||
+                    "Passwords do not match",
                 })}
                 placeholder="******"
                 className={inputStyle}
               />
               {errors.confirmPassword && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors.confirmPassword.message}
+                  {errors.confirmPassword.message as string}
                 </p>
               )}
             </div>
           </div>
           <div className="flex w-full gap-4">
             <div className="w-full">
-              <label htmlFor="phone" id="phone" className="block">
+              <label htmlFor="phone" className="block">
                 Phone:<span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
+                id="phone"
                 {...register("phone", {
-                  required: "phone number is rquired",
+                  required: "phone number is required",
+                  pattern: {
+                    value:
+                      /^(\+1[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$|^(\+91[\-\s]?)??(91)?[6-9]\d{9}$/,
+
+                    message: "Please enter a valid phone number",
+                  },
                 })}
-                placeholder="+919999999"
+                placeholder="+91 98765 43210"
                 className={inputStyle}
               />
               {errors.phone && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors.phone.message}
+                  {errors.phone.message as string}
                 </p>
               )}
             </div>
 
             <div className="w-full">
-              <label htmlFor="age" id="age" className="block">
+              <label htmlFor="age" className="block">
                 Age:<span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
+                id="age"
                 {...register("age", {
-                  required: true,
+                  required: "Age is required",
                   min: {
                     value: 18,
                     message: "Age must be greater then 18",
@@ -178,7 +187,7 @@ export default function Home() {
               />
               {errors.age && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors.age.message}
+                  {errors.age.message as string}
                 </p>
               )}
             </div>
@@ -186,27 +195,29 @@ export default function Home() {
 
           <div className="flex w-full gap-4">
             <div className="w-full">
-              <label htmlFor="dob" id="dob" className="block">
+              <label htmlFor="dob" className="block">
                 Date of Birth:<span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
+                id="dob"
                 {...register("dob", { required: "Date of birth is required" })}
                 placeholder="dd/mm/yy"
                 className={inputStyle}
               />
               {errors.dob && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors.dob.message}
+                  {errors.dob.message as string}
                 </p>
               )}
             </div>{" "}
             <div className="w-full">
-              <label htmlFor="meetingTime" id="meetingTime" className="block">
+              <label htmlFor="meetingTime" className="block">
                 Meeting Time:
               </label>
               <input
                 type="time"
+                id="meetingTime"
                 {...register("meetingTime")}
                 placeholder="--:--:--"
                 className={inputStyle}
@@ -216,7 +227,7 @@ export default function Home() {
 
           <div className="flex w-full gap-4">
             <div className="w-full">
-              <label htmlFor="country" id="country" className="block">
+              <label htmlFor="country" className="block">
                 Country<span className="text-red-500">*</span>
               </label>
               <select
@@ -240,10 +251,10 @@ export default function Home() {
               <label>
                 <input
                   type="radio"
-                  value="begineer"
+                  value="beginner"
                   {...register("level", { required: "please choose level" })}
                 />
-                <span>begineer</span>
+                <span>beginner</span>
               </label>
               <label>
                 <input
@@ -264,13 +275,13 @@ export default function Home() {
             </div>
             {errors.level && (
               <p className="text-xs text-red-500 mt-1">
-                {errors.level.message}
+                {errors.level.message as string}
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="level" id="level" className="block">
+            <label htmlFor="interest" id="interest" className="block">
               Interest
             </label>
             <div className="mt-3 flex items-center gap-10">
@@ -280,7 +291,7 @@ export default function Home() {
                     type="checkbox"
                     id={`interest-${index}`}
                     value={data}
-                    {...register("interests")}
+                    {...register("interest")}
                   />
                   {data}
                 </label>
@@ -289,7 +300,7 @@ export default function Home() {
           </div>
 
           <div className="w-full border-t border-neutral-500  mt-10 mb-10"></div>
-          <label htmlFor="level" id="level" className="block">
+          <label className="block">
             Terms<span className="text-red-500">*</span>
           </label>
           <div>
@@ -298,13 +309,16 @@ export default function Home() {
               id="terms"
               {...register("terms", { required: "You must accept the terms" })}
             />
-            <label className="ml-2">I agree to the terms of service</label>
+            <label htmlFor="terms" className="ml-2">
+              I agree to the terms of service
+            </label>
             {errors.terms && (
               <p className="text-xs text-red-500 mt-1">
-                {errors.terms.message}
+                {errors.terms.message as string}
               </p>
             )}
           </div>
+
           <button
             type="submit"
             className="mt-4 bg-neutral-700 cursor-pointer text-white px-4 py-2 rounded"
@@ -314,7 +328,9 @@ export default function Home() {
         </form>
       </div>
 
-      <InfoModal data={info} isOpen={open} onClose={() => setOpen(false)} />
+      {info && (
+        <InfoModal data={info} isOpen={open} onClose={() => setOpen(false)} />
+      )}
     </div>
   );
 }
