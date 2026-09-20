@@ -6,7 +6,7 @@ const inputStyle = "border border-neutral-500 px-3 py-2 mt-1 w-full rounded-sm";
 
 type Validator = (
   value: InfoModalData[keyof InfoModalData],
-  values: InfoModalData
+  values: InfoModalData,
 ) => string;
 
 const initialValues: InfoModalData = {
@@ -31,7 +31,7 @@ const ControlledForm = () => {
 
   // handleChange Funtion
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
 
@@ -85,9 +85,14 @@ const ControlledForm = () => {
       return "";
     },
 
-    phone: (value) => (!value ? "phone number is required" : ""),
+    phone: (value) => {
+      const v = value as string;
+      if (!v) return "phone number is required";
+      if (!/^\d{10}$/.test(v)) return "please enter valid number";
+      return "";
+    },
 
-    terms: (v) => (!v ? "please accepts the terms" : ""),
+    terms: (value) => (!value ? "please accepts the terms" : ""),
   };
 
   const validate = () => {
